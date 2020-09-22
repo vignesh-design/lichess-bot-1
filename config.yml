@@ -3,7 +3,7 @@ url: "https://lichess.org/"  # lichess base URL, do not change this
 
 engine:                      # engine settings
   dir: "./engines/"          # dir containing engines, relative to this project
-  name: "stockfish_20011801_x64_modern"        # binary name of the engine, on windows don't forget the '.exe' extenstion
+  name: "engine_name"        # binary name of the engine, on windows don't forget the '.exe' extenstion
   protocol: "uci"            # "uci" or "xboard"
   uci_ponder: true           # think on opponent time; only works if "protocol" is "uci"
   polyglot:
