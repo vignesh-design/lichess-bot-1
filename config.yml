@@ -9,7 +9,9 @@ engine:                      # engine settings
   polyglot:
     enabled: false           # activate polyglot book
     book:
-      standard: "engines/book.bin" # book file path of standard chess (must be in .bin format -> PolyGlot)
+      standard: # "engines/book.bin" # book file path of standard chess (must be in .bin format -> PolyGlot) EDIT: it's possible to use more than 1 book!
+        - engines/book1.bin
+        - engines/book2.bin 
 #      atomic: "atomic book path"
 #      giveaway: "antichess book path"
 #      crazyhouse: "crazyhouse book path"
@@ -25,8 +27,8 @@ engine:                      # engine settings
   uci_options:               # arbitrary UCI options passed to the engine
     Move Overhead: 100       # increase if your bot flags games too often
     Ponder: true
-    Threads: 1               # max CPU threads the engine can use
-    Hash: 256                # max memory (in megabytes) the engine can allocate
+    Threads: 2               # max CPU threads the engine can use
+    Hash: 128                # max memory (in megabytes) the engine can allocate
 #   go_commands:             # additional options to pass to the UCI go command, please see 'engine_wrapper.py'
 #     nodes: 1               # Search so many nodes only.
 #     depth: 5               # Search depth ply only.
