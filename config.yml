@@ -12,6 +12,7 @@ engine:                      # engine settings
       standard: # "engines/book.bin" # book file path of standard chess (must be in .bin format -> PolyGlot) EDIT: it's possible to use more than 1 book!
         - engines/book1.bin
         - engines/book2.bin 
+        - engines/book3.bin # the more the merrier
 #      atomic: "atomic book path"
 #      giveaway: "antichess book path"
 #      crazyhouse: "crazyhouse book path"
