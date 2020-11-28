@@ -30,7 +30,7 @@ try:
 except ImportError:
     from http.client import BadStatusLine as RemoteDisconnected
 
-__version__ = "1.1.5"
+__version__ = "1.1.4"
 
 terminated = False
 
@@ -136,7 +136,6 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config, 
     game = model.Game(initial_state, user_profile["username"], li.baseUrl, config.get("abort_time", 20))
     board = setup_board(game)
     engine = engine_factory(board)
-    engine.get_opponent_info(game)
     conversation = Conversation(game, engine, li, __version__, challenge_queue)
 
     logger.info("+++ {}".format(game))
@@ -171,7 +170,7 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config, 
                     break
     else:
         moves = game.state["moves"].split()
-        if not is_game_over(game) and is_engine_move(game, moves):
+        if not board.is_game_over() and is_engine_move(game, moves):
             book_move = None
             best_move = None
             ponder_move = None
@@ -214,7 +213,7 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config, 
                 game.state = upd
                 moves = upd["moves"].split()
                 board = update_board(board, moves[-1])
-                if not is_game_over(game) and is_engine_move(game, moves):
+                if not board.is_game_over() and is_engine_move(game, moves):
                     if config.get("fake_think_time") and len(moves) > 9:
                         delay = min(game.clock_initial, game.my_remaining_seconds()) * 0.015
                         accel = 1 - max(0, min(100, len(moves) - 20)) / 150
@@ -336,30 +335,32 @@ def play_first_book_move(game, engine, board, li, config):
 
 def get_book_move(board, config):
     if board.uci_variant == "chess":
-        book = config["standard"]
+        books = config["standard"]
     else:
         if config.get("{}".format(board.uci_variant)):
-            book = config["{}".format(board.uci_variant)]
+            books = config["{}".format(board.uci_variant)]
         else:
             return None
 
-    with chess.polyglot.open_reader(book) as reader:
-        try:
-            selection = config.get("selection", "weighted_random")
-            if selection == "weighted_random":
-                move = reader.weighted_choice(board).move()
-            elif selection == "uniform_random":
-                move = reader.choice(board, minimum_weight=config.get("min_weight", 1)).move()
-            elif selection == "best_move":
-                move = reader.find(board, minimum_weight=config.get("min_weight", 1)).move()
-        except IndexError:
-            # python-chess raises "IndexError" if no entries found
-            move = None
+    for book in books:
+        with chess.polyglot.open_reader(book) as reader:
+            try:
+                selection = config.get("selection", "weighted_random")
+                if selection == "weighted_random":
+                    move = reader.weighted_choice(board).move()
+                elif selection == "uniform_random":
+                    move = reader.choice(board, minimum_weight=config.get("min_weight", 1)).move()
+                elif selection == "best_move":
+                    move = reader.find(board, minimum_weight=config.get("min_weight", 1)).move()
+            except IndexError:
+                # python-chess raises "IndexError" if no entries found
+                move = None
 
-    if move is not None:
-        logger.info("Got move {} from book {}".format(move, book))
+        if move is not None:
+            logger.info("Got move {} from book {}".format(move, book))
+            return move
 
-    return move
+    return None
 
 
 def setup_board(game):
@@ -385,16 +386,9 @@ def is_engine_move(game, moves):
     return game.is_white == is_white_to_move(game, moves)
 
 
-def is_game_over(game):
-    return game.state["status"] != "started"
-
-
 def update_board(board, move):
     uci_move = chess.Move.from_uci(move)
-    if board.is_legal(uci_move):
-        board.push(uci_move)
-    else:
-        logger.debug('Ignoring illegal move {} on board {}'.format(move, board.fen()))
+    board.push(uci_move)
     return board
 
 def intro():
