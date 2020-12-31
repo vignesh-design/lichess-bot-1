@@ -42,7 +42,7 @@ engine:                      # engine settings
 #     nalimov: "Nalimov Path"
 #     scorpio: "Scorpio Path"
 #     syzygy: "Syzygy Path"
-  silence_stderr: false      # some engines (yes you, leela) are very noisy
+# silence_stderr: false      # some engines (yes you, leela) are very noisy
 
 abort_time: 20               # time to abort a game in seconds when there is no activity
 fake_think_time: false       # artificially slow down the bot to pretend like it's thinking
@@ -66,7 +66,6 @@ challenge:                   # incoming challenges
 #   - racingKings
 #   - threeCheck
   time_controls:             # time controls to accept
-#   - ultraBullet            # BOTs can't play ultrabullet anymore :(
     - bullet
     - blitz
 #   - rapid
@@ -82,4 +81,5 @@ challenge:                   # incoming challenges
 
 # Print the message in the player or spectator chats at the beginning of each game
 # msgPlayer: "Hello!"
-# msgSpectator: "Hello!"
+# msgSpectator: "Hello!" 
+# Please be nice in the chat!
