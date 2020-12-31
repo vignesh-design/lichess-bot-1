@@ -157,7 +157,15 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config, 
         ponder_results[game.id] = ( best_move , ponder_move )
 
     engine.set_time_control(game)
-
+    
+    msgPlayer = config.get("msgPlayer")
+    if msgPlayer is not None:
+        li.chat(game.id, 'player', msgPlayer)
+    
+    msgSpectator = config.get("msgSpectator")
+    if msgSpectator is not None:
+        li.chat(game.id, 'spectator', msgSpectator)
+    
     if len(board.move_stack) < 2:
         while not terminated:
             try:
