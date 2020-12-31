@@ -79,3 +79,7 @@ challenge:                   # incoming challenges
 # Notes:
 # Go commands are not passed to engine, please see engine_wrapper.py file instead
 # modes can also be edited from the model.py file
+
+# Print the message in the player or spectator chats at the beginning of each game
+# msgPlayer: "Hello!"
+# msgSpectator: "Hello!"
